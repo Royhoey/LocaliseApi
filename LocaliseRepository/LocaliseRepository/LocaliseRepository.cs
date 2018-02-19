@@ -10,7 +10,7 @@ namespace LocaliseRepository
 {
 	public class LocaliseRepository : ILocaliseRepository
 	{
-		private static readonly string _baseApiUri = "https://localise.biz/api/";
+		private static readonly string _baseApiUri = "https://localise.biz/api";
 
 		private readonly HttpClient _httpClient;
 		private readonly string _apiKey;
@@ -23,7 +23,7 @@ namespace LocaliseRepository
 
 		public async Task<IEnumerable<Locale>> GetLocales()
 		{
-			var uri = _baseApiUri + "locales?key=" + _apiKey;
+			var uri = $"{_baseApiUri}/locales?key={_apiKey}";
 			var response = await _httpClient.GetAsync(uri);
 
 			return JsonConvert.DeserializeObject<List<Locale>>(await response.Content.ReadAsStringAsync());
@@ -31,7 +31,7 @@ namespace LocaliseRepository
 
 		public async Task<TranslationData> GetTranslation(string id, string locale)
 		{
-			var uri = _baseApiUri + $"translations/{id}/{locale}?key={_apiKey}";
+			var uri = $"{_baseApiUri}/translations/{id}/{locale}?key={_apiKey}";
 			var response = await _httpClient.GetAsync(uri);
 
 			return JsonConvert.DeserializeObject<TranslationData>(await response.Content.ReadAsStringAsync());
@@ -39,7 +39,7 @@ namespace LocaliseRepository
 
 		public async Task<IEnumerable<TranslationData>> GetTranslations(string id)
 		{
-			var uri = _baseApiUri + $"translations/{id}?key={_apiKey}";
+			var uri = $"{_baseApiUri}/translations/{id}?key={_apiKey}";
 			var response = await _httpClient.GetAsync(uri);
 
 			return JsonConvert.DeserializeObject<List<TranslationData>>(await response.Content.ReadAsStringAsync());
@@ -47,7 +47,7 @@ namespace LocaliseRepository
 
 		public async Task<bool> AssetExists(string id)
 		{
-			var uri = _baseApiUri + "assets/" + id + "?key=" + _apiKey;
+			var uri = $"{_baseApiUri}/assets/{id}?key={_apiKey}";
 			var response = await _httpClient.GetAsync(uri);
 
 			return response.IsSuccessStatusCode;
@@ -55,7 +55,7 @@ namespace LocaliseRepository
 
 		public async Task CreateAsset(string name, string id, List<string> tags, string type = "text")
 		{
-			var uri = _baseApiUri + "assets?key=" + _apiKey;
+			var uri = $"{_baseApiUri}/assets?key={_apiKey}";
 
 			var requestHeaders = new Dictionary<string, string> {
 				{ "name", name },
@@ -81,7 +81,7 @@ namespace LocaliseRepository
 
 		public async Task AddTranslation(string id, Locale locale, string translation)
 		{
-			var uri = _baseApiUri + "translations/" + id + "/" + locale.Code + "/?key=" + _apiKey;
+			var uri = $"{_baseApiUri}/translations/{id}/{locale.Code}/?key={_apiKey}";
 
 			var response = await _httpClient.PostAsync(uri, new StringContent(translation));
 
@@ -93,7 +93,7 @@ namespace LocaliseRepository
 
 		private async Task TagAsset(string id, string tag)
 		{
-			var uri = _baseApiUri + "assets/" + id + "/tags?key=" + _apiKey;
+			var uri = $"{_baseApiUri}/assets/{id}/tags?key={_apiKey}";
 
 			var requestHeaders = new Dictionary<string, string> {
 				{ "name", tag },
