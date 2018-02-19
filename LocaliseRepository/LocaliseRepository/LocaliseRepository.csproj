@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Repository to easily call Localise API
+https://localise.biz/api</Description>
   </PropertyGroup>
 
   <ItemGroup>
