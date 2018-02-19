@@ -8,9 +8,9 @@ namespace LocaliseApi.Interfaces
 	{
 		Task<IEnumerable<Locale>> GetLocales();
 
-		string GetTranslation(string id, string locale);
+		Task<TranslationData> GetTranslation(string id, string locale);
 
-		Task<string> GetTranslations(string id);
+		Task<IEnumerable<TranslationData>> GetTranslations(string id);
 
 		Task CreateAsset(string name, string id, List<string> tags, string type = "text");
 

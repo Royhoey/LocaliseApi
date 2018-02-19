@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace LocaliseApi
+namespace LocaliseRepository
 {
 	public class LocaliseRepository : ILocaliseRepository
 	{
@@ -18,6 +18,7 @@ namespace LocaliseApi
 		public LocaliseRepository(string apiKey)
 		{
 			_apiKey = apiKey;
+			_httpClient = new HttpClient();
 		}
 
 		public async Task<IEnumerable<Locale>> GetLocales()
@@ -28,14 +29,20 @@ namespace LocaliseApi
 			return JsonConvert.DeserializeObject<List<Locale>>(await response.Content.ReadAsStringAsync());
 		}
 
-		public string GetTranslation(string id, string locale)
+		public async Task<TranslationData> GetTranslation(string id, string locale)
 		{
-			throw new NotImplementedException();
+			var uri = _baseApiUri + $"translations/{id}/{locale}?key={_apiKey}";
+			var response = await _httpClient.GetAsync(uri);
+
+			return JsonConvert.DeserializeObject<TranslationData>(await response.Content.ReadAsStringAsync());
 		}
 
-		public Task<string> GetTranslations(string id)
+		public async Task<IEnumerable<TranslationData>> GetTranslations(string id)
 		{
-			throw new NotImplementedException();
+			var uri = _baseApiUri + $"translations/{id}?key={_apiKey}";
+			var response = await _httpClient.GetAsync(uri);
+
+			return JsonConvert.DeserializeObject<List<TranslationData>>(await response.Content.ReadAsStringAsync());
 		}
 
 		public async Task<bool> AssetExists(string id)
@@ -94,11 +101,11 @@ namespace LocaliseApi
 			};
 
 			var response = await _httpClient.PostAsync(uri, new FormUrlEncodedContent(requestHeaders));
-
+			
 			if (!response.IsSuccessStatusCode)
 			{
 				throw new Exception($"Error while tagging asset '{id}' with tag '{tag}'. Response status code: {response.StatusCode}. Reason phrase: {response.ReasonPhrase}");
 			}
-		}
+		}		
 	}
 }
