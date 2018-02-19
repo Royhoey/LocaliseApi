@@ -45,6 +45,18 @@ namespace LocaliseRepository
 			return JsonConvert.DeserializeObject<List<TranslationData>>(await response.Content.ReadAsStringAsync());
 		}
 
+		public async Task AddTranslation(string id, Locale locale, string translation)
+		{
+			var uri = $"{_baseApiUri}/translations/{id}/{locale.Code}/?key={_apiKey}";
+
+			var response = await _httpClient.PostAsync(uri, new StringContent(translation));
+
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new Exception($"Error while adding translation '{translation}' for asset '{id}'. Response status code: {response.StatusCode}. Reason phrase: {response.ReasonPhrase}");
+			}
+		}
+
 		public async Task<bool> AssetExists(string id)
 		{
 			var uri = $"{_baseApiUri}/assets/{id}?key={_apiKey}";
@@ -78,20 +90,8 @@ namespace LocaliseRepository
 				throw new Exception($"Error while creating asset '{id}'. Response status code: {response.StatusCode}. Reason phrase: {response.ReasonPhrase}");
 			}
 		}
-
-		public async Task AddTranslation(string id, Locale locale, string translation)
-		{
-			var uri = $"{_baseApiUri}/translations/{id}/{locale.Code}/?key={_apiKey}";
-
-			var response = await _httpClient.PostAsync(uri, new StringContent(translation));
-
-			if (!response.IsSuccessStatusCode)
-			{
-				throw new Exception($"Error while adding translation '{translation}' for asset '{id}'. Response status code: {response.StatusCode}. Reason phrase: {response.ReasonPhrase}");
-			}
-		}
-
-		private async Task TagAsset(string id, string tag)
+		
+		public async Task TagAsset(string id, string tag)
 		{
 			var uri = $"{_baseApiUri}/assets/{id}/tags?key={_apiKey}";
 

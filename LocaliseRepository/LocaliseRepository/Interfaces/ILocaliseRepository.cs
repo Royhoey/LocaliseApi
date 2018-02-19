@@ -12,10 +12,12 @@ namespace LocaliseApi.Interfaces
 
 		Task<IEnumerable<TranslationData>> GetTranslations(string id);
 
-		Task CreateAsset(string name, string id, List<string> tags, string type = "text");
-
 		Task AddTranslation(string id, Locale locale, string translation);
 
 		Task<bool> AssetExists(string id);
+
+		Task CreateAsset(string name, string id, List<string> tags, string type = "text");
+		
+		Task TagAsset(string id, string tag);
 	}
 }
